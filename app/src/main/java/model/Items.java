@@ -13,12 +13,18 @@ public class Items extends RealmObject implements ClusterItem {
     private final  LatLng mPosition;
     private  final String mTitle;
     private final String mSnippet;
+    public final int photoRes;
 
-    public Items(double Lat,double Lang,String mTitle, String mSnippet) {
+    public Items(double Lat,double Lang,String mTitle, String mSnippet,int photoRes) {
         mPosition = new LatLng(Lat,Lang);
         this.mTitle= mTitle;
         this.mSnippet = mSnippet;
+        this.photoRes=photoRes;
 
+    }
+
+    public int getPhotoRes() {
+        return photoRes;
     }
 
     @Override
