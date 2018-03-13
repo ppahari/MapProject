@@ -3,6 +3,8 @@ package com.example.realnapster.map;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,8 +26,10 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.google.maps.android.ui.IconGenerator;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import model.Items;
 
@@ -188,25 +192,33 @@ private class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     }
 
     private void addItems(){
+        List<Address> addresses = new ArrayList<>();
+        Geocoder geocoder = new Geocoder(mContext, Locale.getDefault());
+
         // Set some lat/lng coordinates to start with.
         double lat = 39.0094477;
         double lng = -76.9658255;
         String mTitle;
         String mSnippet;
-
         // Add twenty cluster items in close proximity for Example purpose
         for (int i = 0; i < 20; i++) {
             double offset = i / 60d;
             lat = lat + offset;
             lng = lng + offset;
+            try {
+                addresses = geocoder.getFromLocation(lat,lng,1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            String address = addresses.get(0).getAddressLine(0);
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
             mTitle = " Title " + i;
-            mSnippet= "Hello I'm Snippet " +i ;
+            mSnippet= address + " , " + city + " , " + state ;
             Items offsetItem = new Items(lat, lng,mTitle,mSnippet,R.mipmap.atm);
             mClusterManager.addItem(offsetItem);
             Log.e("Item Log","Item Added");
         }
 
     }
-
-
 }
